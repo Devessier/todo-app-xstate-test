@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { createModel } from "xstate/lib/model";
 import { useMachine } from "@xstate/vue";
+import CheckboxList from "./components/CheckboxList.vue";
 
 interface TodoItem {
   id: string;
@@ -33,6 +34,10 @@ const todoModel = createModel(
   {
     events: {
       CREATE_TODO: () => ({}),
+
+      CLOSE_TODO_CREATION: () => ({}),
+
+      SAVE_TODO: (todo: string) => ({ todo }),
     },
   }
 );
@@ -53,6 +58,27 @@ const todoMachine = todoModel.createMachine({
 
     creatingTodo: {
       tags: "showTodoCreationForm",
+
+      on: {
+        CLOSE_TODO_CREATION: {
+          target: "idle",
+        },
+
+        SAVE_TODO: {
+          target: "idle",
+
+          actions: todoModel.assign({
+            todos: ({ todos }, { todo }) => [
+              ...todos,
+              {
+                id: todo,
+                label: todo,
+                checked: false,
+              },
+            ],
+          }),
+        },
+      },
     },
   },
 });
@@ -69,14 +95,45 @@ const thingsDone = computed(() =>
   state.value.context.todos.filter(({ checked }) => checked === true)
 );
 
-function handleAddTodoButtonClick() {
+function handleOpenTodoCreation() {
   send({
     type: "CREATE_TODO",
   });
 }
+
+function handleCloseTodoCreation() {
+  send({
+    type: "CLOSE_TODO_CREATION",
+  });
+}
+
+function sanitizeNewTodo(todo: string): string {
+  return todo.trim();
+}
+
+function handleSaveTodo({ target }: Event) {
+  if (target === null) {
+    return;
+  }
+
+  const formData = new FormData(target as HTMLFormElement);
+  const newTodo = formData.get("new-todo");
+  if (typeof newTodo !== "string") {
+    return;
+  }
+
+  const sanitizedNewTodo = sanitizeNewTodo(newTodo);
+  if (sanitizedNewTodo.length === 0) {
+    return;
+  }
+
+  send({
+    type: "SAVE_TODO",
+    todo: newTodo,
+  });
+}
 </script>
 
-<!-- This example requires Tailwind CSS v2.0+ -->
 <template>
   <div class="min-h-screen bg-white">
     <nav class="bg-white border-b border-gray-200">
@@ -97,89 +154,70 @@ function handleAddTodoButtonClick() {
           </h1>
         </div>
       </header>
+
       <main>
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div class="px-4 py-8 space-y-6 sm:px-0">
-            <fieldset class="">
-              <legend class="text-lg font-medium leading-6 text-gray-900">
-                Things to do
-              </legend>
+            <CheckboxList :items="thingsToDo">
+              <template #title> Things to do </template>
+            </CheckboxList>
 
-              <div class="mt-4 space-y-2">
-                <div
-                  v-for="{ id, label, checked } in thingsToDo"
-                  :key="label"
-                  class="relative flex items-start"
-                >
-                  <div class="flex items-center h-5">
+            <div
+              v-if="showTodoCreationForm"
+              class="bg-white shadow sm:rounded-lg"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">
+                  Create a todo
+                </h3>
+
+                <form class="mt-5" @submit.prevent="handleSaveTodo">
+                  <div class="w-full sm:max-w-xs">
+                    <label for="new-todo" class="sr-only">New Todo</label>
+
                     <input
-                      :value="checked"
-                      :aria-describedby="`todo-${id}-description`"
-                      :name="`todo-${id}`"
-                      type="checkbox"
-                      class="w-4 h-4 text-yellow-600 border-gray-300 rounded  focus:ring-yellow-500"
+                      type="text"
+                      name="new-todo"
+                      id="new-todo"
+                      class="block w-full border-gray-300 rounded-md shadow-sm  focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
+                      placeholder="Write an article about XState"
                     />
                   </div>
 
-                  <div class="ml-3 text-sm">
-                    <span
-                      :id="`todo-${id}-description`"
-                      class="font-medium text-gray-700"
+                  <div class="flex justify-start pt-5">
+                    <button
+                      type="submit"
+                      class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-yellow-500 border border-transparent rounded-md shadow-sm  hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                     >
-                      {{ label }}
-                    </span>
+                      Save
+                    </button>
+
+                    <button
+                      type="button"
+                      class="px-4 py-2 ml-3 text-sm font-medium bg-white border border-gray-300 rounded-md shadow-sm  text-blue-gray-900 hover:bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                      @click="handleCloseTodoCreation"
+                    >
+                      Cancel
+                    </button>
                   </div>
-                </div>
+                </form>
               </div>
-            </fieldset>
-
-            <div>
-              <p v-if="showTodoCreationForm">LOL</p>
-
-              <button
-                v-else
-                type="button"
-                class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-yellow-500 border border-transparent rounded-full shadow-sm  hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-                @click="handleAddTodoButtonClick"
-              >
-                <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
-
-                Add a todo
-              </button>
             </div>
 
-            <fieldset class="">
-              <legend class="text-lg font-medium leading-6 text-gray-900">
-                Things done
-              </legend>
+            <button
+              v-else
+              type="button"
+              class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-white bg-yellow-500 border border-transparent rounded-full shadow-sm  hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+              @click="handleOpenTodoCreation"
+            >
+              <PlusIcon class="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
 
-              <div class="mt-4 space-y-2">
-                <div
-                  v-for="{ id, label, checked } in thingsDone"
-                  :key="label"
-                  class="relative flex items-start"
-                >
-                  <div class="flex items-center h-5">
-                    <input
-                      :checked="checked"
-                      :aria-describedby="`todo-${id}-description`"
-                      :name="`todo-${id}`"
-                      type="checkbox"
-                      class="w-4 h-4 text-yellow-600 border-gray-300 rounded  focus:ring-yellow-500"
-                    />
-                  </div>
+              Add a todo
+            </button>
 
-                  <div class="ml-3 text-sm">
-                    <span
-                      :id="`todo-${id}-description`"
-                      class="font-medium text-gray-700"
-                    >
-                      {{ label }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
+            <CheckboxList :items="thingsDone">
+              <template #title> Things done </template>
+            </CheckboxList>
           </div>
         </div>
       </main>
