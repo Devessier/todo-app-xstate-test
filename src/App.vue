@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const lol = "aaa";
 </script>
 
 <template>
