@@ -5,7 +5,18 @@ const props = defineProps<{
     label: string;
     checked: boolean;
   }[];
+  onCheckboxChange: (id: string, checked: boolean) => void;
 }>();
+
+function handleCheckboxChangeEvent(id: string, event: Event) {
+  const target = event.target;
+  if (target === null) {
+    return;
+  }
+  const inputTarget = target as HTMLInputElement;
+
+  props.onCheckboxChange(id, inputTarget.checked);
+}
 </script>
 
 <template>
@@ -27,6 +38,7 @@ const props = defineProps<{
             :name="`todo-${id}`"
             type="checkbox"
             class="w-4 h-4 text-yellow-600 border-gray-300 rounded  focus:ring-yellow-500"
+            @change="handleCheckboxChangeEvent(id, $event)"
           />
         </div>
 

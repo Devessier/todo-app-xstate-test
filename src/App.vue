@@ -38,6 +38,11 @@ const todoModel = createModel(
       CLOSE_TODO_CREATION: () => ({}),
 
       SAVE_TODO: (todo: string) => ({ todo }),
+
+      UPDATE_TODO_STATUS: (id: string, checked: boolean) => ({
+        id,
+        checked,
+      }),
     },
   }
 );
@@ -79,6 +84,24 @@ const todoMachine = todoModel.createMachine({
           }),
         },
       },
+    },
+  },
+
+  on: {
+    UPDATE_TODO_STATUS: {
+      actions: todoModel.assign({
+        todos: ({ todos }, { id: todoToUpdateId, checked }) =>
+          todos.map((todo) => {
+            if (todo.id !== todoToUpdateId) {
+              return todo;
+            }
+
+            return {
+              ...todo,
+              checked: checked,
+            };
+          }),
+      }),
     },
   },
 });
@@ -132,6 +155,14 @@ function handleSaveTodo({ target }: Event) {
     todo: newTodo,
   });
 }
+
+function handleTodoStatusUpdate(id: string, checked: boolean) {
+  send({
+    type: "UPDATE_TODO_STATUS",
+    id,
+    checked: checked,
+  });
+}
 </script>
 
 <template>
@@ -157,8 +188,11 @@ function handleSaveTodo({ target }: Event) {
 
       <main>
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div class="px-4 py-8 space-y-6 sm:px-0">
-            <CheckboxList :items="thingsToDo">
+          <div class="px-4 py-8 space-y-4 sm:px-0">
+            <CheckboxList
+              :items="thingsToDo"
+              :on-checkbox-change="handleTodoStatusUpdate"
+            >
               <template #title> Things to do </template>
             </CheckboxList>
 
@@ -215,7 +249,10 @@ function handleSaveTodo({ target }: Event) {
               Add a todo
             </button>
 
-            <CheckboxList :items="thingsDone">
+            <CheckboxList
+              :items="thingsDone"
+              :on-checkbox-change="handleTodoStatusUpdate"
+            >
               <template #title> Things done </template>
             </CheckboxList>
           </div>
