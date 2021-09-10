@@ -12,6 +12,7 @@
     "@headlessui/vue": "^1.4.1",
     "@heroicons/vue": "^1.0.4",
     "@tailwindcss/forms": "^0.3.3",
+    "@vueuse/core": "^6.3.2",
     "@xstate/vue": "^0.8.1",
     "vue": "^3.2.6",
     "xstate": "^4.23.4"

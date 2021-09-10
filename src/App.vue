@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { createModel } from "xstate/lib/model";
 import { useMachine } from "@xstate/vue";
+import { onKeyDown } from "@vueuse/core";
 import CheckboxList from "./components/CheckboxList.vue";
 
 interface TodoItem {
@@ -163,6 +164,8 @@ function handleTodoStatusUpdate(id: string, checked: boolean) {
     checked: checked,
   });
 }
+
+onKeyDown("Escape", handleCloseTodoCreation);
 </script>
 
 <template>
