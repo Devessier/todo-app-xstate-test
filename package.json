@@ -24,6 +24,7 @@
     "@testing-library/vue": "^6.4.2",
     "@types/faker": "^5.5.8",
     "@types/jest": "^27.0.1",
+    "@typescript-eslint/parser": "^4.31.0",
     "@vitejs/plugin-vue": "^1.6.1",
     "@vue/compiler-sfc": "^3.2.6",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
@@ -39,6 +40,6 @@
     "ts-jest": "^27.0.5",
     "typescript": "^4.3.2",
     "vite": "^2.5.4",
-    "vue-tsc": "^0.2.2"
+    "vue-tsc": "^0.2.3"
   }
 }

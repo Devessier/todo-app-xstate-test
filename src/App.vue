@@ -213,9 +213,9 @@ onKeyDown("Escape", handleCloseTodoCreation);
                     <label for="new-todo" class="sr-only">New Todo</label>
 
                     <input
+                      id="new-todo"
                       type="text"
                       name="new-todo"
-                      id="new-todo"
                       class="block w-full border-gray-300 rounded-md shadow-sm  focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"
                       placeholder="Write an article about XState"
                     />
