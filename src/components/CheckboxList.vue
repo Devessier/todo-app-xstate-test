@@ -25,8 +25,8 @@ function handleCheckboxChangeEvent(id: string, event: Event) {
       <slot name="title" />
     </legend>
 
-    <div class="mt-4 space-y-2">
-      <div
+    <ul class="mt-4 space-y-2">
+      <li
         v-for="{ id, label, checked } in props.items"
         :key="label"
         class="relative flex items-start"
@@ -50,7 +50,7 @@ function handleCheckboxChangeEvent(id: string, event: Event) {
             {{ label }}
           </span>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </fieldset>
 </template>
