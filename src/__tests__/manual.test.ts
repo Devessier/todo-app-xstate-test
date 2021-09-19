@@ -1,7 +1,7 @@
 import { screen, render } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { lorem } from "faker";
-import App from "../src/App.vue";
+import App from "../App.vue";
 
 test("User can add a todo", async () => {
   render(App);
