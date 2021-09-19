@@ -1,3 +1,4 @@
+// @@@SNIPSTART todo-app-xstate-test-manual-tests
 import { screen, render } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { lorem } from "faker";
@@ -28,3 +29,4 @@ test("User can add a todo", async () => {
   const newTodoItem = await screen.findByText(newTodo);
   expect(newTodoItem).toBeVisible();
 });
+// @@@SNIPEND
