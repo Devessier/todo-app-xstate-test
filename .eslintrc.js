@@ -6,7 +6,12 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ["eslint:recommended", "plugin:vue/vue3-recommended", "prettier"],
+  extends: [
+    "plugin:jest/recommended",
+    "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "prettier",
+  ],
   rules: {
     "vue/no-unused-vars": "error",
     "vue/script-setup-uses-vars": "error",
@@ -17,4 +22,5 @@ module.exports = {
     defineExpose: "readonly",
     withDefaults: "readonly",
   },
+  plugins: ["@typescript-eslint", "jest"],
 };
