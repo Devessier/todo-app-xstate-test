@@ -13,6 +13,7 @@
     "types": ["vite/client", "@types/jest"]
   },
   "include": [
+    "__tests__/**/*.test.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
