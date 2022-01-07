@@ -10,14 +10,14 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client", "@types/jest"]
+    "types": ["vite/client"]
   },
   "include": [
-    "__tests__/**/*.test.ts",
+    "./env.d.ts",
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.tsx",
     "src/**/*.vue",
-    "./jest-setup.ts"
+    "./test/setup.ts",
+    "test/*.test.ts"
   ]
 }

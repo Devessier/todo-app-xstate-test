@@ -1,15 +1,7 @@
-const colors = require("tailwindcss/colors");
-
 module.exports = {
-  mode: "jit",
-  purge: ["./*.html", "./src/**/*.{ts,vue}"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./*.html", "./src/**/*.{ts,vue}"],
   theme: {
-    extend: {
-      colors: {
-        "blue-gray": colors.blueGray,
-      },
-    },
+    extend: {},
   },
   variants: {
     extend: {},
