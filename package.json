@@ -7,7 +7,8 @@
     "serve": "vite preview",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write",
-    "test": "jest"
+    "test": "vitest",
+    "coverage": "vitest --coverage"
   },
   "dependencies": {
     "@headlessui/vue": "^1.4.1",
@@ -38,6 +39,7 @@
     "tailwindcss": "^2.2.15",
     "typescript": "^4.3.2",
     "vite": "^2.5.4",
+    "vitest": "^0.0.139",
     "vue-tsc": "^0.2.3"
   },
   "volta": {
